@@ -24,13 +24,12 @@ const AdminSchema = new mongoose.Schema({
 AdminSchema.pre('save', function (next) {
     if (this.isModified('password') || this.isNew) {
         if(this.password.length < 6){
-            throw new Error('Password must be at least 6 characters');
+            return next( new Error('Password must be at least 6 characters'));
         }
         const salt = bcrypt.genSalt(10);
         this.password = bcrypt.hash(this.password, salt);
-
+        next();
     }
-    next();
 });
 
 
