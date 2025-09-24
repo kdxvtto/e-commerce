@@ -38,12 +38,14 @@ const addAdmin = async (req,res) =>{
         const {
             name,
             email,
-            password
+            password,
+            address
         } = req.body;
         const admin = new Admin({
             name,
             email,
-            password
+            password,
+            address
         });
         const newAdmin = await admin.save();
         res.status(201).json({

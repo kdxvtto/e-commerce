@@ -27,6 +27,7 @@ const addProduct = async (req,res) => {
             name,
             description,
             category,
+            quantity,
             price,
             image
         } = req.body;
@@ -34,6 +35,7 @@ const addProduct = async (req,res) => {
             name,
             description,
             category,
+            quantity,
             price,
             image
         });

@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const UserSchema = new mongoose.Schema({
     name: {
@@ -13,7 +13,8 @@ const UserSchema = new mongoose.Schema({
     },
     password: {
         type: String,
-        required: true
+        required: true,
+        select: false
     },
     address: {
         type: String,
@@ -25,15 +26,19 @@ const UserSchema = new mongoose.Schema({
     }
 );
 
-UserSchema.pre('save', function (next) {
-    if (this.isModified('password') || this.isNew) {
-        if(this.password.length < 6){
-            throw new Error('Password must be at least 6 characters');
+UserSchema.pre('save', async function (next) {
+    try{
+        if (this.isModified('password') || this.isNew) {
+            if(this.password.length < 6){
+                throw new Error('Password must be at least 6 characters');
+            }
+            const salt = await bcrypt.genSalt(10);
+            this.password = await bcrypt.hash(this.password, salt);
         }
-        const salt = bcrypt.genSalt(10);
-        this.password = bcrypt.hash(this.password, salt);
+        next();
+    } catch (error) {
+        next(error);
     }
-    next();
 });
 
 
